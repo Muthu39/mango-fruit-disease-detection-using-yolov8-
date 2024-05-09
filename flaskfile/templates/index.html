@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container > * {
+            margin-bottom: 20px;
+        }
+        .camera-module {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Processing</h1>
+        
+        <!-- Upload Image Form -->
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="file-upload" class="custom-file-upload">
+                <input id="file-upload" type="file" name="file" accept="image/*">Choose File
+            </label>
+            <button type="submit">Upload</button>
+        </form>
+        
+        <!-- Camera Capture -->
+        <div class="camera-module">
+            <h2>Camera Module</h2>
+            <video id="video" width="640" height="480" autoplay></video>
+            <button id="capture-button">Capture</button>
+        </div>
+        
+    </div>
+
+    <!-- JavaScript for Camera -->
+    <script>
+        const video = document.getElementById('video');
+
+        // Use getUserMedia to access the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                console.error('Error accessing the camera: ', err);
+            });
+
+        // Capture Button Functionality
+        const captureButton = document.getElementById('capture-button');
+        captureButton.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append('file', blob, 'webcam_capture.jpg');
+
+                // Send the blob to the server
+                fetch('/capture', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then((data) => {
+                    console.log('Capture successful: ', data);
+                    // Redirect to the result page or do something else if needed
+                })
+                .catch((error) => {
+                    console.error('Capture error: ', error);
+                });
+            }, 'image/jpeg');
+        });
+    </script>
+</body>
+</html>

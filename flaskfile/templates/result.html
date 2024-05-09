@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("https://causeartist.com/wp-content/uploads/2022/08/Best-Plant-Identification-Apps-to-Better-Connect-with-Nature.png");
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: 30% 40%;
+            margin: 0;
+            padding: 0;
+            color: #ff00b3; /* Set text color to white for better readability */
+        }
+
+        .container {
+            max-width: 800px; /* Adjust as needed */
+            margin: 150px auto;
+            /*background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+            padding: 100px;
+            border-radius: 10px;
+            position: relative; 
+           /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* Add shadow for depth */
+        }
+
+        h1 {
+            text-align: left; /* Align the title to the left */
+            margin: 0; /* Remove all margins */
+            position: absolute; /* Position the title */
+            top: 10px; /* Align to the top of the container */
+            left: 0; /* Align to the left of the container */
+        }
+
+        p {
+            text-align: left;
+            font-size: 18px;
+        }
+
+        .annotated-image {
+            max-width: 100%; /* Ensure image does not overflow container */
+            height: auto; /* Maintain aspect ratio */
+            position: absolute; /* Position the image */
+            top: 50px; /* Adjust as needed */
+            left: 0; /* Align to the left */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if annotated_image_path %}
+            <h1>Predicted Image:</h1>
+            <p>{{ predictions[0] }}</p> <!-- Assuming the first prediction is shown -->
+         
+            <img class="annotated-image" src="{{ url_for('static', filename='uploads/annotated_image.jpg') }}" alt="Annotated Image">
+        {% endif %}
+    </div>
+</body>
+</html>
